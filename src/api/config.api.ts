@@ -1,21 +1,36 @@
-import axios from 'axios';
-import { API_URL} from '@/lib/constans';
+// src/api/config.api.ts
+import axios from "axios";
+import { API_URL, API_HEADER } from "@/lib/constants";
 
 const api = axios.create({
   baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  },
+  headers: API_HEADER, // Тут лежит Content-Type: application/json
+  withCredentials: true,
 });
 
-// Добавляем токен в каждый запрос
+// 👇 ДОБАВЬТЕ ЭТОТ БЛОК (Request Interceptor)
 api.interceptors.request.use((config) => {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  // Если мы отправляем FormData (файлы)...
+  if (config.data instanceof FormData) {
+    // ...то удаляем Content-Type, чтобы браузер сам подставил
+    // multipart/form-data и правильный boundary
+    delete config.headers["Content-Type"];
   }
   return config;
 });
+
+// Ваш существующий Response Interceptor оставляем как есть
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (!error.response) return Promise.reject(error);
+
+    if (error.response.status === 401) {
+      return Promise.reject(error);
+    }
+
+    return Promise.reject(error);
+  },
+);
 
 export default api;

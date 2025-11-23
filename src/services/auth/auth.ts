@@ -1,25 +1,16 @@
-// src/lib/auth.ts
-import api from '@/api/config.api';
-import { z } from 'zod';
-import { registerSchema, loginSchema } from '@/schemas/auth';
+import api from "@/api/config.api";
+import { loginSchema } from "@/features/auth/login/model/login.schema";
+import { registerSchema } from "@/features/auth/register/model/register.schema";
+import { z } from "zod";
 
-// Типы из схем
-type RegisterData = z.infer<typeof registerSchema>;
-type LoginData = z.infer<typeof loginSchema>;
-
-// Регистрация
-export const register = async (data: RegisterData) => {
-  await api.get("/sanctum/csrf-cookie");
-  return api.post("/register", data);
-};
-
-// Вход
-export const login = async (data: LoginData) => {
-  await api.get("/sanctum/csrf-cookie");
+export const login = async (data: z.infer<typeof loginSchema>) => {
   return api.post("/login", data);
 };
 
-// Выход
+export const register = async (data: z.infer<typeof registerSchema>) => {
+  return api.post("/register", data);
+};
+
 export const logout = async () => {
   return api.post("/logout");
 };

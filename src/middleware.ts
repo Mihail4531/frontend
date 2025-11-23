@@ -1,54 +1,31 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+// middleware.ts
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-// Публичные маршруты, куда можно заходить без авторизации
-const publicRoutes = ['/login', '/register'];
+export function middleware(req: NextRequest) {
+  const token = req.cookies.get("accessToken");
+  const isAuth = Boolean(token);
 
-// Админские маршруты
-const adminRoutes = ['/admin', '/admin/(.*)'];
+  const { pathname } = req.nextUrl;
 
-// Пользовательские маршруты
-const userRoutes = ['/', '/tasks', '/dashboard/(.*)'];
+  // ДОБАВЬ '/' в публичные маршруты
+  const publicRoutes = ["/", "/login", "/register"];
 
-export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const isPublic = publicRoutes.includes(pathname);
 
-  // Если пользователь на публичной странице и есть сессия, редирект по роли
-  const cookie = request.cookies.get('laravel_session'); // стандартная cookie Sanctum
-  if (publicRoutes.includes(pathname) && cookie) {
-    try {
-      // Запрашиваем пользователя у backend
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
-        credentials: 'include',
-        headers: { Accept: 'application/json' },
-      });
-
-      const user = await res.json();
-
-      if (user.role === 'ADMIN') {
-        return NextResponse.redirect(new URL('/admin', request.url));
-      } else {
-        return NextResponse.redirect(new URL('/', request.url));
-      }
-    } catch {
-      // Если не удалось получить пользователя — разрешаем доступ
-      return NextResponse.next();
-    }
+  // Если НЕ авторизован → нельзя на приватные страницы
+  if (!isAuth && !isPublic) {
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // Для защищённых маршрутов проверяем cookie
-  const isProtectedRoute =
-    !publicRoutes.includes(pathname) &&
-    (userRoutes.includes(pathname) || adminRoutes.some((r) => pathname.startsWith(r.replace('/(.*)', ''))));
-
-  if (isProtectedRoute && !cookie) {
-    return NextResponse.redirect(new URL('/login', request.url));
+  // Если УЖЕ авторизован → нельзя на login/register
+  if (isAuth && isPublic && pathname !== "/") {
+    return NextResponse.redirect(new URL("/profile", req.url));
   }
 
   return NextResponse.next();
 }
 
-// Куда применяется middleware
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'], // исключаем статические файлы
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
