@@ -1,3 +1,4 @@
-// Мы экспортируем только Карточку.
-// Внутренности типа "ui/..." больше никому не нужно знать.
 export { CommentCard } from "./ui/comment-card";
+export { buildCommentTree } from "./lib/build-tree";
+export type { Comment } from "./model/types";
+export { commentApi } from "./api/comment.api";

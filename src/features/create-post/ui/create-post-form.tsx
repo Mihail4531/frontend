@@ -3,113 +3,79 @@
 import { Button, Input } from "@/shared/ui";
 import { Textarea } from "@/shared/ui/textarea";
 import { useCreatePost } from "../model/useCreate";
-import { ImagePlus, X } from "lucide-react";
+import { Hash } from "lucide-react";
 
 export const CreatePostForm = () => {
-  const {
-    register,
-    handleSubmit,
-    errors,
-    isSubmitting,
-    preview,
-    handleFileChange,
-    removeFile,
-  } = useCreatePost();
+  const { register, handleSubmit, errors, isSubmitting } = useCreatePost();
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-gray-900 border border-gray-800 rounded-2xl p-6 md:p-8 space-y-6 shadow-xl"
+      className="bg-zinc-900/90 backdrop-blur-xl border border-zinc-800 rounded-3xl p-5 sm:p-8 shadow-2xl shadow-red-900/20"
     >
-      <div className="space-y-1">
-        <h2 className="text-2xl font-bold text-white">Новый пост</h2>
-        <p className="text-gray-400 text-sm">
-          Поделитесь знаниями. Пост пройдет модерацию перед публикацией.
+      {/* Заголовок */}
+      <div className="mb-6 text-center sm:text-left">
+        <h1 className="text-2xl sm:text-3xl font-bold text-white">Создать пост</h1>
+        <p className="text-zinc-400 text-sm mt-1.5">
+          Пост пройдёт модерацию и появится в ленте
         </p>
       </div>
 
-      {/* Загрузка обложки */}
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-gray-300">Обложка</label>
-        {!preview ? (
-          <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-800 border-dashed rounded-xl cursor-pointer bg-gray-950/50 hover:bg-gray-900 hover:border-red-500/50 transition group">
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <ImagePlus className="w-8 h-8 text-gray-500 group-hover:text-red-500 transition mb-2" />
-              <p className="text-sm text-gray-500">
-                Нажмите или перетащите фото
-              </p>
-            </div>
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleFileChange}
-            />
-          </label>
-        ) : (
-          <div className="relative w-full h-60 rounded-xl overflow-hidden border border-gray-800">
-            <img
-              src={preview}
-              alt="Preview"
-              className="w-full h-full object-cover"
-            />
-            <button
-              type="button"
-              onClick={removeFile}
-              className="absolute top-2 right-2 p-1.5 bg-black/60 hover:bg-red-600 text-white rounded-full transition"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-        )}
-      </div>
+      <div className="space-y-6">
 
-      {/* Поля ввода */}
-      <div className="space-y-4">
+        {/* Заголовок */}
         <div>
-          <label className="text-sm font-medium text-gray-300 mb-1.5 block">
-            Заголовок
-          </label>
+          <label className="text-sm font-medium text-zinc-300 block mb-2">Заголовок</label>
           <Input
             {...register("title")}
-            placeholder="Например: Как я выучил Laravel"
+            placeholder="Next js"
             error={errors.title?.message}
+            className="h-12 bg-zinc-800/70 border-zinc-700 text-white placeholder-zinc-500 focus:border-red-500 transition-all"
           />
         </div>
 
+        {/* Контент */}
         <div>
-          <label className="text-sm font-medium text-gray-300 mb-1.5 block">
-            Контент
+          <label className="text-sm font-medium text-zinc-300 block mb-2">
+            Содержание (Markdown)
           </label>
           <Textarea
             {...register("content")}
-            placeholder="Пишите здесь..."
+            placeholder={`Напишете свой код впервые`}
             error={errors.content?.message}
+            className="min-h-64 sm:min-h-80 bg-zinc-800/70 border-zinc-700 text-white placeholder-zinc-600 font-mono text-sm leading-relaxed resize-none focus:border-red-500 transition-all"
           />
         </div>
 
+        {/* Теги */}
         <div>
-          <label className="text-sm font-medium text-gray-300 mb-1.5 block">
-            Теги
-          </label>
-          <Input {...register("tags")} placeholder="php, backend, tutorial" />
-          <p className="text-xs text-gray-500 mt-1">Через запятую</p>
+          <label className="text-sm font-medium text-zinc-300 block mb-2">Теги</label>
+          <div className="relative">
+            <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+            <Input
+              {...register("tags")}
+              placeholder="nextjs, react, tutorial"
+              className="pl-10 h-12 bg-zinc-800/70 border-zinc-700 text-white placeholder-zinc-500 focus:border-red-500 transition-all"
+            />
+          </div>
         </div>
       </div>
 
+      {/* Ошибка */}
       {errors.root && (
-        <div className="p-3 bg-red-900/20 border border-red-900/30 text-red-200 rounded text-center text-sm">
+        <div className="mt-6 p-4 bg-red-900/20 border border-red-900/40 text-red-300 rounded-xl text-center text-sm font-medium">
           {errors.root.message}
         </div>
       )}
 
-      <div className="pt-2">
+      {/* Кнопка — теперь красивая и не огромная */}
+      <div className="mt-8">
         <Button
           type="submit"
           isLoading={isSubmitting}
-          className="w-full md:w-auto"
+          className="w-full h-14 bg-red-600 hover:bg-red-500 active:bg-red-700 text-white font-bold text-lg rounded-2xl shadow-lg shadow-red-900/40 transition-all"
         >
-          Отправить на публикацию
+          {isSubmitting ? "Публикуем..." : "Опубликовать пост"}
         </Button>
       </div>
     </form>

@@ -5,7 +5,7 @@ export const createPostSchema = z.object({
   content: z
     .string()
     .min(20, "Напишите хотя бы пару предложений (мин. 20 символов)"),
-  tags: z.string().optional(), // Вводим как строку "php, code"
+  tags: z.string().optional(),
 });
 
 export type CreatePostSchema = z.infer<typeof createPostSchema>;

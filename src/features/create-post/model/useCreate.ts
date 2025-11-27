@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { createPostSchema, CreatePostSchema } from "./create-post.schema";
-import { postApi } from "@/services/blog/blog";
+import { postApi } from "@/entities/post";
 
 export const useCreatePost = () => {
   const router = useRouter();

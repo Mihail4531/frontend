@@ -1,11 +1,11 @@
 "use client";
 
 import { Button, Input } from "@/shared/ui";
-import { useLoginForm } from "@/features/auth/login/model/useLogin";
+import { useLogin} from "@/features/auth/login/model/useLogin";
 
 export const LoginForm = () => {
   // Вся логика скрыта внутри хука
-  const { register, handleSubmit, errors, isSubmitting } = useLoginForm();
+  const { register, handleSubmit, errors, isSubmitting } = useLogin();
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">

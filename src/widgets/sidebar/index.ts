@@ -1,1 +1,1 @@
-export { default as Sidebar } from "./ui/sidebar.ui";
+export { Sidebar } from "./ui/sidebar";

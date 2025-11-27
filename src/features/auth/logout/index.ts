@@ -1,0 +1,1 @@
+export {LogoutButton} from "@/features/auth/logout/ui/logout-button"

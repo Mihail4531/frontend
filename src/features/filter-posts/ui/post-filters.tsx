@@ -7,11 +7,11 @@ export const PostFilters = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const currentTag = searchParams.get("tag");
-  const currentSort = searchParams.get("sort") || "newest";
+  const currentTag = searchParams?.get("tag");
+  const currentSort = searchParams?.get("sort") || "newest";
 
   const updateFilter = (key: string, value: string | null) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString() || "");
     if (value) params.set(key, value);
     else params.delete(key);
     router.push(`/?${params.toString()}`, { scroll: false });
@@ -19,7 +19,7 @@ export const PostFilters = () => {
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/5">
-      {/* ЛЕВАЯ ЧАСТЬ: Текущий контекст */}
+      {/* ЛЕВАЯ ЧАСТЬ: Показываем выбранный тег */}
       <h2 className="text-xl font-bold text-white flex items-center gap-2">
         {currentTag ? (
           <div className="flex items-center gap-2">
@@ -39,11 +39,11 @@ export const PostFilters = () => {
         )}
       </h2>
 
-      {/* ПРАВАЯ ЧАСТЬ: Табы сортировки (ButtonGroup) */}
-      <div className="flex items-center bg-zinc-900 p-1 rounded-lg border border-white/5">
+      {/* ПРАВАЯ ЧАСТЬ: Кнопки сортировки */}
+      <div className="flex items-center bg-zinc-900 p-1 rounded-lg border border-white/5 w-full sm:w-auto">
         <button
           onClick={() => updateFilter("sort", "newest")}
-          className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all flex items-center gap-2 ${
+          className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all flex items-center justify-center gap-2 ${
             currentSort === "newest"
               ? "bg-zinc-800 text-white shadow-sm"
               : "text-zinc-500 hover:text-zinc-300"
@@ -55,7 +55,7 @@ export const PostFilters = () => {
         <div className="w-px h-4 bg-white/5 mx-1" />
         <button
           onClick={() => updateFilter("sort", "oldest")}
-          className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all flex items-center gap-2 ${
+          className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all flex items-center justify-center gap-2 ${
             currentSort === "oldest"
               ? "bg-zinc-800 text-white shadow-sm"
               : "text-zinc-500 hover:text-zinc-300"

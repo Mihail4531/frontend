@@ -1,10 +1,10 @@
 "use client";
 
 import { Button, Input } from "@/shared/ui";
-import { useRegisterForm } from "../model/useRegister";
+import { useRegister} from "../model/useRegister";
 
 export const RegisterForm = () => {
-  const { register, handleSubmit, errors, isSubmitting } = useRegisterForm();
+  const { register, handleSubmit, errors, isSubmitting } = useRegister();
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">

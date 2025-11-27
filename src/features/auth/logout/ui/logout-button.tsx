@@ -2,20 +2,20 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/stores/auth-stores";
+import { useAuthStore } from "@/entities/session";
 import { Button } from "@/shared/ui";
 
 // 1. Добавляем интерфейс пропсов
 interface LogoutButtonProps {
-  className?: string; // Чтобы принимать стили снаружи
-  isCollapsed?: boolean; // Чтобы знать, скрывать текст или нет
-  variant?: "primary" | "secondary" | "danger"; // Чтобы менять цвет
+  className?: string; 
+  isCollapsed?: boolean; 
+  variant?: "primary" | "secondary" | "danger"; 
 }
 
 export const LogoutButton = ({
   className = "",
   isCollapsed = false,
-  variant = "danger", // По умолчанию красная, но можно переопределить
+  variant = "danger", 
 }: LogoutButtonProps) => {
   const [loading, setLoading] = useState(false);
   const logout = useAuthStore((s) => s.logout);
@@ -25,7 +25,7 @@ export const LogoutButton = ({
     setLoading(true);
     try {
       await logout();
-      router.push("/login");
+      router.push("/");
     } finally {
       setLoading(false);
     }
@@ -36,11 +36,11 @@ export const LogoutButton = ({
       variant={variant}
       onClick={handleLogout}
       isLoading={loading}
-      // 2. Пробрасываем className в базовую кнопку
+    
       className={`${className} ${isCollapsed ? "px-2 justify-center" : ""}`}
       title="Выйти"
     >
-      {/* Иконка выхода */}
+
       <svg
         className="w-5 h-5 shrink-0"
         fill="none"
@@ -54,8 +54,6 @@ export const LogoutButton = ({
           d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
         />
       </svg>
-
-      {/* 3. Прячем текст, если сайдбар свернут */}
       {!isCollapsed && <span>Выйти</span>}
     </Button>
   );

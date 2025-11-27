@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { Terminal, Github, Twitter, Disc } from "lucide-react";
-import { footerNavigation } from "@/widgets/footer/confg/links"; // Импорт из соседнего сегмента
+import { Terminal,  Github,  } from "lucide-react";
+import { footerNavigation } from "../config/navigation";
 
 export const Footer = () => {
   return (
     <footer className="border-t border-white/10 bg-black text-zinc-400 mt-auto">
-      {/* Декоративная сетка (как на главной) */}
-      <div className="relative w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      {/* Декоративная сетка */}
+      <div className="relative w-full h-px from-transparent via-white/10 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-6 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
@@ -26,30 +26,18 @@ export const Footer = () => {
               архитектуру, развивайтесь вместе.
             </p>
 
-            {/* Соцсети */}
+ 
             <div className="flex gap-4">
+
               <Link
                 href="#"
                 className="text-zinc-500 hover:text-white transition-colors"
+                aria-label="GitHub"
               >
                 <Github className="w-5 h-5" />
               </Link>
-              <Link
-                href="#"
-                className="text-zinc-500 hover:text-white transition-colors"
-              >
-                <Twitter className="w-5 h-5" />
-              </Link>
-              <Link
-                href="#"
-                className="text-zinc-500 hover:text-white transition-colors"
-              >
-                <Disc className="w-5 h-5" /> {/* Discord icon placeholder */}
-              </Link>
             </div>
           </div>
-
-          {/* Колонки навигации (генерируются из конфига) */}
           {footerNavigation.columns.map((column) => (
             <div key={column.title}>
               <h3 className="text-sm font-bold text-white tracking-wide uppercase mb-4">
@@ -70,8 +58,6 @@ export const Footer = () => {
             </div>
           ))}
         </div>
-
-        {/* Нижняя часть: Копирайт */}
         <div className="mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-zinc-600 font-mono">
           <p>&copy; {new Date().getFullYear()} Dev Community. Open Source.</p>
           <div className="flex gap-6">
