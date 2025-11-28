@@ -1,6 +1,4 @@
 import { HomePage } from "@/pages/home";
-
-// Настройки кэширования для Next.js
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
