@@ -4,28 +4,21 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/shared/ui";
-import { APP_ROUTE } from "@/shared/config";
-
-// FSD Layers
+import { APP_ROUTE } from "@/shared/config"
 import { useAuthStore } from "@/entities/session";
 import { Post, PostCard, postApi } from "@/entities/post";
 import { UserProfileCard } from "@/entities/user";
 import { EditProfileForm } from "@/features/edit-profile";
 import { LogoutButton } from "@/features/auth/logout";
-
-export const ProfilePage = () => {
+  export const ProfilePage = () => {
   const { user, loading } = useAuthStore();
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [postsLoading, setPostsLoading] = useState(true);
-
-  // Проверка авторизации
   useEffect(() => {
     if (!loading && !user) router.replace(APP_ROUTE.auth.login());
   }, [user, loading, router]);
-
-  // Загрузка постов
   useEffect(() => {
     if (user) {
       postApi.getMyPosts()
@@ -35,16 +28,13 @@ export const ProfilePage = () => {
     }
   }, [user]);
 
-  // 👇 ФУНКЦИЯ ДЛЯ ОБНОВЛЕНИЯ СПИСКА ПОСЛЕ УДАЛЕНИЯ
   const handleDeletePost = (postId: number) => {
-    // Убираем удаленный пост из массива, чтобы он исчез сразу, без перезагрузки
     setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
   };
 
   if (loading || !user) {
     return <div className="min-h-screen bg-black flex items-center justify-center text-white">Загрузка...</div>;
   }
-
   return (
     <div className="min-h-screen bg-black py-8 px-4 md:px-8">
         <div className="fixed inset-0 z-0 pointer-events-none">
@@ -66,8 +56,6 @@ export const ProfilePage = () => {
             </div>
           </div>
         )}
-
-        {/* Блок 2: Публикации */}
         {!isEditing && (
           <div className="space-y-6">
             <div className="flex items-center justify-between border-b border-zinc-800 pb-4">

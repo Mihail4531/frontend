@@ -1,4 +1,4 @@
-import { PostDetailsPage } from "@/pages/post-details";
+import { PostDetailsPage  } from "@/pages/post-details";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

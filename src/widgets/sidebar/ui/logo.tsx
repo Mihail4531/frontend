@@ -1,7 +1,5 @@
 "use client";
-
 import { ChevronLeft, Terminal } from "lucide-react";
-
 interface LogoProps {
   isCollapsed: boolean;
   onToggle: () => void;

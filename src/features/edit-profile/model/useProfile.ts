@@ -25,12 +25,10 @@ export const useEditProfile = ({ user, onSuccess }: UseProfileParams) => {
       skills: Array.isArray(user.skills) ? user.skills.join(", ") : "",
     },
   });
-
   const handleFileChange = (file: File) => {
     setAvatarFile(file);
     setPreview(URL.createObjectURL(file));
   };
-
   const onSubmit = async (data: ProfileSchema) => {
     try {
       const fd = new FormData();
@@ -44,7 +42,6 @@ export const useEditProfile = ({ user, onSuccess }: UseProfileParams) => {
       }
 
       if (avatarFile) fd.append("avatar", avatarFile);
-
       await updateProfile(fd);
       onSuccess();
     } catch (error) {
@@ -52,7 +49,6 @@ export const useEditProfile = ({ user, onSuccess }: UseProfileParams) => {
       form.setError("root", { message: "Не удалось сохранить профиль" });
     }
   };
-
   return {
     register: form.register,
     handleSubmit: form.handleSubmit(onSubmit),

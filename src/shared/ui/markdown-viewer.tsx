@@ -7,7 +7,7 @@ import { ComponentPropsWithoutRef } from "react";
 
 interface MarkdownViewerProps {
   content: string;
-  className?: string; // 👇 Добавили возможность менять стили извне
+  className?: string; 
 }
 
 type CodeProps = ComponentPropsWithoutRef<"code"> & {
@@ -16,11 +16,8 @@ type CodeProps = ComponentPropsWithoutRef<"code"> & {
 };
 
 export const MarkdownViewer = ({ content, className }: MarkdownViewerProps) => {
-  // Собираем базовые классы + те, что передали (или дефолтный prose-lg)
   const baseClasses =
     "prose prose-invert max-w-none prose-p:text-zinc-300 prose-p:leading-relaxed prose-headings:text-white prose-headings:font-bold prose-a:text-red-400 hover:prose-a:text-red-300 prose-a:no-underline prose-strong:text-white prose-ul:text-zinc-300 prose-ol:text-zinc-300 prose-li:marker:text-zinc-500 prose-code:text-red-300 prose-code:bg-red-950/30 prose-code:px-1 prose-code:rounded prose-code:before:content-none prose-code:after:content-none";
-
-  // Если передали className, используем его, иначе дефолт (prose-lg)
   const finalClass = `${baseClasses} ${className || "prose-lg"}`;
 
   return (
@@ -53,7 +50,7 @@ export const MarkdownViewer = ({ content, className }: MarkdownViewerProps) => {
                     borderRadius: 0,
                     background: "#09090b",
                     padding: "1rem",
-                    fontSize: "0.85rem", // Чуть меньше шрифт кода для комментов
+                    fontSize: "0.85rem", 
                     lineHeight: "1.5",
                   }}
                 >

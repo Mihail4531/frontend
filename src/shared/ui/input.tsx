@@ -7,17 +7,13 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className = "", type = "text", error, ...props }, ref) => {
-    // Состояние: показывать пароль или нет
     const [showPassword, setShowPassword] = useState(false);
-
-    // Проверяем, является ли инпут паролем
     const isPasswordType = type === "password";
 
     return (
       <div className="relative w-full">
         <input
           ref={ref}
-          // Если это пароль и мы нажали "показать", меняем тип на text
           type={isPasswordType && showPassword ? "text" : type}
           className={`
             w-full px-4 py-3 rounded-lg transition-all outline-none border
@@ -30,19 +26,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           `}
           {...props}
         />
-
-        {/* Рендерим кнопку только если тип инпута === password */}
         {isPasswordType && (
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            // 👇 ЗДЕСЬ МЕНЯТЬ ЦВЕТ ГЛАЗА
-            // text-gray-400 (серый по умолчанию)
-            // hover:text-red-500 (красный при наведении)
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
           >
             {showPassword ? (
-              // Иконка "Скрыть" (Перечеркнутый глаз)
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -57,7 +47,6 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 />
               </svg>
             ) : (
-              // Иконка "Показать" (Обычный глаз)
               <svg
                 className="w-5 h-5"
                 fill="none"

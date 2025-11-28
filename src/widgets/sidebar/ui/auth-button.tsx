@@ -9,7 +9,6 @@ interface Props {
   isCollapsed: boolean;
   onNavigate?: () => void;
 }
-
 export const AuthButton = ({ isCollapsed, onNavigate }: Props) => {
   const { user } = useAuthStore();
   const router = useRouter();

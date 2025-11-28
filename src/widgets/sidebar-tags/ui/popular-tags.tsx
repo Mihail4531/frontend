@@ -10,9 +10,9 @@ interface Props {
 export const PopularTags = ({ tags }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
- const currentTag = searchParams?.get("tag");
+  const currentTag = searchParams?.get("tag");
   const handleTagClick = (tagName: string) => {
-     const params = new URLSearchParams(searchParams?.toString() || "");
+    const params = new URLSearchParams(searchParams?.toString() || "");
     if (currentTag === tagName) params.delete("tag");
     else params.set("tag", tagName);
     router.push(`/?${params.toString()}`, { scroll: false });

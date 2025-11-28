@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
 import { Reply, Trash2 } from "lucide-react";
-import { Comment, CommentCard } from "@/entities/comment"; // Entity
-import { AddCommentForm } from "@/features/add-comment"; // Feature
+import { Comment, CommentCard } from "@/entities/comment"; 
+import { AddCommentForm } from "@/features/add-comment"; 
 import { useAuthStore } from "@/entities/session";
 
 interface Props {
@@ -26,10 +26,7 @@ export const CommentItem = ({ comment, postId, onReply, onDelete }: Props) => {
   return (
     <div className="flex flex-col relative animate-in fade-in">
       <div className="group relative">
-        {/* Entity: Просто карточка с данными */}
         <CommentCard comment={comment} />
-
-        {/* Логика управления (Reply/Delete) находится здесь, в Виджете */}
         <div className="pl-14 mt-1 flex items-center gap-3">
           {user && (
             <button
@@ -40,7 +37,6 @@ export const CommentItem = ({ comment, postId, onReply, onDelete }: Props) => {
               {isReplying ? "Отмена" : "Ответить"}
             </button>
           )}
-          
           {canDelete && (
              <button
               onClick={() => onDelete(comment.id)}
@@ -51,9 +47,7 @@ export const CommentItem = ({ comment, postId, onReply, onDelete }: Props) => {
           )}
         </div>
       </div>
-
       <div className="pl-14 mt-2 space-y-4">
-        {/* Feature: Форма ответа */}
         {isReplying && (
           <div className="relative">
             <div className="absolute left-[-18px] top-0 bottom-0 w-px bg-white/10" />
@@ -65,10 +59,8 @@ export const CommentItem = ({ comment, postId, onReply, onDelete }: Props) => {
             />
           </div>
         )}
-
-        {/* Рекурсия */}
         {comment.children && comment.children.length > 0 && (
-          <div className="border-l border-white/10 ml-[-20px] pl-5 space-y-6 pt-2">
+          <div className="border-l border-white/10 -ml-5 pl-5 space-y-6 pt-2">
             {comment.children.map((child) => (
               <CommentItem
                 key={child.id}

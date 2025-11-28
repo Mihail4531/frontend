@@ -15,7 +15,6 @@ export const Sidebar = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { user } = useAuthStore();
-
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
@@ -28,16 +27,12 @@ export const Sidebar = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
   const handleNavigate = () => {
     if (isMobile) {
       setIsCollapsed(true);
     }
   };
-
-  const logoutStyles =
-    "w-full flex items-center justify-start gap-3 px-3 py-3 rounded-lg transition-all bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 font-medium";
-
+  const logoutStyles ="w-full flex items-center justify-start gap-3 px-3 py-3 rounded-lg transition-all bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 font-medium";
   return (
     <>
       {isMobile && isCollapsed && (

@@ -1,10 +1,8 @@
 import { ButtonHTMLAttributes } from "react";
-
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "danger";
   isLoading?: boolean;
 }
-
 export const Button = ({
   variant = "primary",
   isLoading,

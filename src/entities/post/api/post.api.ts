@@ -1,8 +1,5 @@
 import { $axios } from "@/shared/api";
-// 👇 Импортируем типы из МОДЕЛИ текущей сущности, а не из lib
 import { Post, Tag } from "../model/types";
-
-// Интерфейс фильтров лучше держать здесь или в model/types.ts
 export interface PostFilters {
   tag?: string;
   sort?: "newest" | "oldest";

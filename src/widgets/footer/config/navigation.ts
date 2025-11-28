@@ -15,12 +15,6 @@ export const footerNavigation = {
         { name: "Правила сообщества", href: "/rules" },
       ],
     },
-    {
-      title: "Компания",
-      links: [
-        { name: "О нас", href: "/about" },
-        { name: "Контакты", href: "/contact"  },
-      ],
-    },
+   
   ],
 };

@@ -1,18 +1,10 @@
+import { LoginSchema } from "@/features/auth/login/model/login.schema";
 import { $axios } from "../client";
-export interface LoginDTO {
-  email: string;
-  password: string;
-}
-export interface RegisterDTO {
-  name: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
-}
-export const login = (data: LoginDTO) => {
-  return $axios.post("/login", data);
-};
-export const register = (data: RegisterDTO) => {
+import { RegisterSchema } from "@/features/auth/register/model/register.schema";
+export const login = async (data: LoginSchema) => {
+    return $axios.post("/login", data);
+  };
+export const register = (data: RegisterSchema) => {
   return $axios.post("/register", data);
 };
 export const logout = () => {

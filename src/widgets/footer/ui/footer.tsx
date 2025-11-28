@@ -5,12 +5,9 @@ import { footerNavigation } from "../config/navigation";
 export const Footer = () => {
   return (
     <footer className="border-t border-white/10 bg-black text-zinc-400 mt-auto">
-      {/* Декоративная сетка */}
       <div className="relative w-full h-px from-transparent via-white/10 to-transparent" />
-
       <div className="max-w-7xl mx-auto px-6 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
-          {/* Колонка 1: Брендинг */}
           <div className="lg:col-span-1">
             <Link
               href="/"
@@ -25,10 +22,7 @@ export const Footer = () => {
               Платформа для разработчиков. Делитесь кодом, обсуждайте
               архитектуру, развивайтесь вместе.
             </p>
-
- 
             <div className="flex gap-4">
-
               <Link
                 href="#"
                 className="text-zinc-500 hover:text-white transition-colors"
