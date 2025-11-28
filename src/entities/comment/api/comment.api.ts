@@ -16,7 +16,7 @@ export const commentApi = {
   },
 
 
-  delete: async (postId: number, commentId: number): Promise<void> => {
-    await $axios.delete(`/posts/${postId}/comments/${commentId}`);
-  },
+ delete: async (postId: number, commentId: number) => {
+    await $axios.delete(`/comments/${commentId}`);
+},
 };
