@@ -6,7 +6,7 @@ export const usePostComments = (postId: number) => {
   const [isLoading, setIsLoading] = useState(true);
   const isMounted = useRef(true);
 
-  // Функция загрузки (оставляем как есть)
+  // Функция загрузки
   const fetchComments = useCallback(async (showLoader = false) => {
     try {
       if (showLoader) setIsLoading(true);
@@ -27,28 +27,49 @@ export const usePostComments = (postId: number) => {
     return () => { isMounted.current = false; };
   }, [fetchComments]);
 
-  // 👇 ИСПРАВЛЕНИЕ ЗДЕСЬ
   const handleAdd = (newComment: Comment) => {
-    // Просто добавляем новый комментарий (у которого уже есть настоящий ID) в список
-    // setTimeout и повторный fetch не нужны!
     setComments((prev) => [newComment, ...prev]);
   };
 
+  // 👇 ГЛАВНОЕ ИСПРАВЛЕНИЕ ЗДЕСЬ 👇
   const handleDeleteComment = async (commentId: number) => {
     if (!confirm("Удалить комментарий?")) return;
     
-    // Оптимистичное удаление (сразу убираем из UI)
-    setComments((prev) => prev.filter((c) => c.id !== commentId));
+    // Оптимистичное удаление: убираем и родителя, и всех его детей сразу
+    setComments((prev) => {
+      // 1. Создаем набор ID для удаления
+      const idsToDelete = new Set<number>();
+      idsToDelete.add(commentId);
+
+      // 2. Рекурсивная функция для поиска всех потомков в плоском списке
+      const collectChildren = (parentId: number) => {
+        prev.forEach((c) => {
+          if (c.parent_id === parentId) {
+            idsToDelete.add(c.id);
+            collectChildren(c.id); // Ищем детей ребенка
+          }
+        });
+      };
+
+      // 3. Запускаем поиск
+      collectChildren(commentId);
+
+      // 4. Возвращаем список БЕЗ родителя и БЕЗ детей
+      return prev.filter((c) => !idsToDelete.has(c.id));
+    });
     
     try {
+      // Отправляем на сервер только ID родителя.
+      // Благодаря cascadeOnDelete сервер удалит и детей.
       await commentApi.delete(postId, commentId);
     } catch (err) {
       console.error(err);
-      // Если удаление не удалось — возвращаем комментарии с сервера
+      // Если ошибка — возвращаем данные с сервера
       fetchComments(false); 
       alert("Ошибка удаления");
     }
   };
+  // 👆 КОНЕЦ ИСПРАВЛЕНИЯ 👆
 
   const commentTree = useMemo(() => buildCommentTree(comments), [comments]);
   
