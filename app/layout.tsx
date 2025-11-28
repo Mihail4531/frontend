@@ -6,11 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Dev Community",
-  description: "Platform for developers",
-  // 👇 ЯВНО УКАЗЫВАЕМ ПУТЬ
-  icons: {
-    icon: '/favicon.ico', 
-  },
+  description: "Platform for developers"
 };
 
 export default function RootLayout({
