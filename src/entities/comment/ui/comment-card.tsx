@@ -15,7 +15,7 @@ export const CommentCard = ({ comment }: Props) => {
   
   return (
     <div className="flex gap-4 group animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <div className="flex-shrink-0 mt-1">
+          <div className="shrink-0 mt-1">
         {user ? (
             <UserPopover user={user}>
                 <div className="w-10 h-10 rounded-full bg-zinc-800 ring-1 ring-white/10 overflow-hidden cursor-pointer hover:ring-red-500/50 transition-all">

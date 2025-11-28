@@ -15,32 +15,21 @@ export const useAddComment = ({ postId, parentId, onCommentAdded }: UseAddCommen
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Проверка: если текста нет или юзер не залогинен — выходим
     if (!newComment.trim() || !user) return;
 
     const content = newComment;
-    setNewComment(""); 
     setIsSubmitting(true);
 
-    // 1. Оптимистичное добавление
-    const tempComment: Comment = {
-      id: Date.now(), 
-      content: content,
-      created_at: new Date().toISOString(),
-      parent_id: parentId || null,
-      
-      // 👇 ИСПРАВЛЕНИЕ ЗДЕСЬ
-      // Мы берем ВСЕ поля из текущего user (включая email, roles и т.д.),
-      // чтобы удовлетворить типы TypeScript.
-      user: { ...user }, 
-      
-      children: [],
-    };
-
-    onCommentAdded(tempComment);
-
     try {
-      await commentApi.create(postId, content, parentId);
+      // 1. Сначала отправляем запрос на сервер
+      const realCommentFromServer = await commentApi.create(postId, content, parentId);
+
+      // 2. Сервер вернул созданный объект с НАСТОЯЩИМ ID (например, id: 15)
+      // Добавляем его в список на фронте
+      onCommentAdded(realCommentFromServer);
+
+      // 3. Очищаем форму только после успеха
+      setNewComment(""); 
     } catch (error) {
       console.error("Ошибка отправки комментария", error);
       alert("Не удалось отправить комментарий");
