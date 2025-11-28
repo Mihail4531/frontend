@@ -71,10 +71,17 @@ export const EditProfileForm = ({ user, onSuccess, onCancel }: Props) => {
           </h3>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="text-sm text-gray-400 mb-1 block">GitHub</label>
-              <Input {...register("github_username")} placeholder="username" />
-            </div>
-            <div className="md:col-span-2">
+                  <label className="text-sm text-gray-400 mb-1 block">GitHub</label>
+                  <Input {...register("github_username")} placeholder="username" />
+                            
+                  {/* 👇 ВОТ ЭТОГО НЕ ХВАТАЛО */}
+                  {errors.github_username && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.github_username.message}
+                    </p>
+                  )}
+                </div>
+                            <div className="md:col-span-2">
               <label className="text-sm text-gray-400 mb-1 block">
                 Веб-сайт
               </label>
