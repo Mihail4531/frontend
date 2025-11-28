@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Post, postApi } from "@/entities/post";
 import Link from "next/link";
 import { APP_ROUTE } from "@/shared/config";
-import { Calendar, User, Trash2, Loader2, Clock } from "lucide-react";
+// 👇 1. Добавляем Pencil в импорты
+import { Calendar, User, Trash2, Loader2, Clock, Pencil } from "lucide-react";
 import { UserPopover } from "@/entities/user/ui/user-popup";
 import { useAuthStore } from "@/entities/session";
 
@@ -19,6 +20,10 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
 
   const postLink = APP_ROUTE?.blog?.show(post.slug) || `/blog/${post.slug}`;
   const isOwner = post.user && user?.id === post.user.id;
+
+  // 👇 2. Логика: Автор + Пост еще не одобрен
+  const canEdit = isOwner && !post.is_approved;
+  const editLink = `/blog/edit/${post.id}`;
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -52,10 +57,10 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
   return (
     <article className="group relative flex flex-col bg-zinc-900/20 border border-white/5 rounded-xl p-6 hover:bg-zinc-900/40 hover:border-white/10 transition-all duration-300">
       
-      {/* 1. ГЛАВНАЯ ССЫЛКА */}
+      {/* ГЛАВНАЯ ССЫЛКА НА ПОСТ */}
       <Link href={postLink} className="absolute inset-0 z-0" aria-label={post.title} />
 
-      {/* 2. СТАТУС (слева сверху) */}
+      {/* СТАТУС (слева сверху) */}
       {!post.is_approved && (
         <div className="absolute top-4 left-4 z-30 pointer-events-none">
           <span className="flex items-center gap-1.5 px-2.5 py-1 bg-yellow-500/10 text-yellow-500 text-[10px] font-mono font-medium uppercase rounded-md border border-yellow-500/20 backdrop-blur-sm">
@@ -65,9 +70,23 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
         </div>
       )}
 
-      {/* 3. КНОПКА УДАЛЕНИЯ (справа сверху) */}
-      {isOwner && (
-        <div className="absolute top-4 right-4 z-30">
+      {/* 👇 3. БЛОК ДЕЙСТВИЙ (справа сверху) */}
+      <div className="absolute top-4 right-4 z-30 flex items-center gap-2">
+        
+        {/* КНОПКА РЕДАКТИРОВАНИЯ */}
+        {canEdit && (
+          <Link
+            href={editLink}
+            onClick={(e) => e.stopPropagation()} // Чтобы не сработал переход на сам пост
+            className="flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-800/80 backdrop-blur-sm border border-white/10 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all cursor-pointer shadow-lg"
+            title="Редактировать"
+          >
+            <Pencil className="w-4 h-4" />
+          </Link>
+        )}
+
+        {/* КНОПКА УДАЛЕНИЯ */}
+        {isOwner && (
           <button
             onClick={handleDelete}
             disabled={isDeleting}
@@ -80,10 +99,10 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
               <Trash2 className="w-4 h-4" />
             )}
           </button>
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* 4. ТЕГИ (КРАСНАЯ ПОДСВЕТКА) */}
+      {/* ТЕГИ */}
       <div className="flex gap-2 overflow-hidden mb-4 mt-6 relative z-10 pointer-events-none">
         {post.tags?.slice(0, 3).map((tag) => (
           <span
@@ -96,14 +115,17 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
           </span>
         ))}
       </div>
+      
       <div className="mb-3 group-hover:translate-x-1 transition-transform duration-300 relative z-10 pointer-events-none">
         <h3 className="text-xl font-bold text-zinc-100 leading-tight tracking-tight group-hover:text-red-400 transition-colors pr-6">
           {post.title}
         </h3>
       </div>
+      
       <p className="text-zinc-400 text-sm leading-relaxed line-clamp-3 mb-6 flex-1 relative z-10 pointer-events-none">
         {excerpt}
       </p>
+      
       <div className="pt-4 mt-auto border-t border-white/5 flex items-center justify-between text-xs text-zinc-500 font-mono relative z-10">
         <div className="flex items-center gap-2 relative z-20 pointer-events-auto">
           {post.user ? (

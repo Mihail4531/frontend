@@ -21,3 +21,8 @@ export type PostFilters = {
   tag?: string;
   sort?: "newest" | "oldest";
 };
+export interface UpdatePostData {
+  title: string;
+  content: string;
+  tags?: string[]; 
+}
