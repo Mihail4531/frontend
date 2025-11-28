@@ -22,7 +22,8 @@ const ROLE_LABELS: Record<string, string> = {
 export const UserProfileCard = ({ user, onEdit }: Props) => {
   const primaryRole = user.roles?.[0] || "user";
   const displayRole = ROLE_LABELS[primaryRole] || primaryRole;
-  const isAdmin = user.roles?.includes("admin");
+    const hasAccess = user.roles?.some(role => ['admin', 'moderator'].includes(role));
+
   
   // Убираем лишние слэши для корректной ссылки
   const adminUrl = `${API_URL?.replace(/\/api\/?$/, "")}/admin`;
@@ -37,7 +38,7 @@ export const UserProfileCard = ({ user, onEdit }: Props) => {
         
         {/* Кнопки действий (справа сверху) */}
         <div className="absolute top-3 right-3 md:top-4 md:right-4 flex gap-2 md:gap-3 z-10">
-          {isAdmin && (
+          { hasAccess && (
             <Link
               href={adminUrl}
               className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-black/40 backdrop-blur-md border border-white/10 rounded-full text-xs font-bold text-red-200 hover:bg-red-950/50 transition-all"
@@ -73,7 +74,7 @@ export const UserProfileCard = ({ user, onEdit }: Props) => {
             />
             {/* Иконка статуса */}
             <div className="absolute bottom-1 right-1 md:bottom-2 md:right-2 bg-zinc-900 text-red-500 p-1 md:p-1.5 rounded-full border border-zinc-800 shadow-lg">
-              {isAdmin ? (
+              { hasAccess ? (
                 <ShieldCheck className="w-4 h-4 md:w-5 md:h-5" />
               ) : (
                 <div className="w-3 h-3 md:w-4 md:h-4 rounded-full bg-green-500 border-2 border-zinc-900" />
@@ -92,7 +93,7 @@ export const UserProfileCard = ({ user, onEdit }: Props) => {
                 @{user.email?.split('@')[0]}
               </span>
               <span className="hidden md:block w-1 h-1 rounded-full bg-zinc-700" />
-              <span className={`px-2 py-0.5 rounded text-[10px] uppercase tracking-wide border ${isAdmin ? "bg-red-950/30 text-red-400 border-red-900/50" : "bg-zinc-800 text-zinc-500 border-zinc-700"}`}>
+              <span className={`px-2 py-0.5 rounded text-[10px] uppercase tracking-wide border ${ hasAccess ? "bg-red-950/30 text-red-400 border-red-900/50" : "bg-zinc-800 text-zinc-500 border-zinc-700"}`}>
                 {displayRole}
               </span>
             </div>

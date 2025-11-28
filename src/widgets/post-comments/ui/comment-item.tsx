@@ -16,7 +16,13 @@ export const CommentItem = ({ comment, postId, onReply, onDelete }: Props) => {
   const [isReplying, setIsReplying] = useState(false);
   const { user } = useAuthStore();
 
-  const canDelete = user?.id === comment.user?.id || user?.roles?.includes("admin");
+  const isAuthor = user?.id === comment.user?.id;
+  
+  // 2. Проверяем, есть ли права (админ ИЛИ модератор)
+  const hasAccess = user?.roles?.some(role => ['admin', 'moderator'].includes(role));
+
+  // 3. Итоговое условие
+  const canDelete = isAuthor || hasAccess;
 
   const handleReplyAdded = (newComment: Comment) => {
     onReply(newComment);
