@@ -12,6 +12,7 @@ interface Props {
 }
 
 export const EditProfileForm = ({ user, onSuccess, onCancel }: Props) => {
+  
   const {
     register,
     handleSubmit,
@@ -74,7 +75,7 @@ export const EditProfileForm = ({ user, onSuccess, onCancel }: Props) => {
                   <label className="text-sm text-gray-400 mb-1 block">GitHub</label>
                   <Input {...register("github_username")} placeholder="username" />
                             
-                  {/* 👇 ВОТ ЭТОГО НЕ ХВАТАЛО */}
+                  
                   {errors.github_username && (
                     <p className="text-red-500 text-xs mt-1">
                       {errors.github_username.message}
