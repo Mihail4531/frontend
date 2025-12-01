@@ -2,7 +2,7 @@
 
 import { ProfileUser } from "@/entities/user";
 import { Button, Input } from "@/shared/ui";
-import { UserAvatar } from "@/entities/user/ui/user-avatar"; // Импорт аватара
+import { UserAvatar } from "@/entities/user/ui/user-avatar";
 import { useEditProfile } from "../model/useProfile";
 
 interface Props {
@@ -12,7 +12,6 @@ interface Props {
 }
 
 export const EditProfileForm = ({ user, onSuccess, onCancel }: Props) => {
-  
   const {
     register,
     handleSubmit,
@@ -24,7 +23,7 @@ export const EditProfileForm = ({ user, onSuccess, onCancel }: Props) => {
 
   return (
     <form onSubmit={handleSubmit} className="p-6 space-y-8">
-      {/* СЕКЦИЯ 1: Аватар */}
+      {/* ... Аватар без изменений ... */}
       <div className="flex flex-col items-center -mt-12">
         <UserAvatar
           user={user}
@@ -39,6 +38,7 @@ export const EditProfileForm = ({ user, onSuccess, onCancel }: Props) => {
       </div>
 
       <div className="grid gap-6">
+        {/* ... Имя без изменений ... */}
         <div className="space-y-4">
           <h3 className="text-lg font-medium text-white border-b border-gray-800 pb-2">
             О себе
@@ -54,6 +54,8 @@ export const EditProfileForm = ({ user, onSuccess, onCancel }: Props) => {
               )}
             </div>
           </div>
+
+          {/* 👇 ИСПРАВЛЕНИЕ: Биография */}
           <div>
             <label className="text-sm text-gray-400 mb-1 block">
               Биография
@@ -61,28 +63,35 @@ export const EditProfileForm = ({ user, onSuccess, onCancel }: Props) => {
             <textarea
               {...register("bio")}
               rows={3}
-              className="w-full px-4 py-3 bg-gray-950 border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:border-red-500 outline-none resize-none transition focus:ring-1 focus:ring-red-500"
+              // Добавил border-red-500 при ошибке
+              className={`w-full px-4 py-3 bg-gray-950 border rounded-lg text-white placeholder-gray-500 outline-none resize-none transition focus:ring-1 focus:ring-red-500 ${
+                errors.bio ? "border-red-500" : "border-gray-800"
+              }`}
               placeholder="Расскажите немного о себе..."
             />
+            {/* Вывод ошибки */}
+            {errors.bio && (
+              <p className="text-red-500 text-xs mt-1">{errors.bio.message}</p>
+            )}
           </div>
         </div>
+
+        {/* ... Соцсети без изменений ... */}
         <div className="space-y-4">
           <h3 className="text-lg font-medium text-white border-b border-gray-800 pb-2">
             Социальные сети
           </h3>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-                  <label className="text-sm text-gray-400 mb-1 block">GitHub</label>
-                  <Input {...register("github_username")} placeholder="username" />
-                            
-                  
-                  {errors.github_username && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.github_username.message}
-                    </p>
-                  )}
-                </div>
-                            <div className="md:col-span-2">
+              <label className="text-sm text-gray-400 mb-1 block">GitHub</label>
+              <Input {...register("github_username")} placeholder="username" />
+              {errors.github_username && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.github_username.message}
+                </p>
+              )}
+            </div>
+            <div className="md:col-span-2">
               <label className="text-sm text-gray-400 mb-1 block">
                 Веб-сайт
               </label>
@@ -98,6 +107,8 @@ export const EditProfileForm = ({ user, onSuccess, onCancel }: Props) => {
             </div>
           </div>
         </div>
+
+        {/* 👇 ИСПРАВЛЕНИЕ: Навыки */}
         <div className="space-y-4">
           <h3 className="text-lg font-medium text-white border-b border-gray-800 pb-2">
             Навыки
@@ -107,17 +118,25 @@ export const EditProfileForm = ({ user, onSuccess, onCancel }: Props) => {
               {...register("skills")}
               placeholder="React, PHP, Design (через запятую)"
             />
+            {/* Вывод ошибки */}
+            {errors.skills && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.skills.message}
+              </p>
+            )}
             <p className="text-xs text-gray-500 mt-2">
               Перечислите технологии через запятую
             </p>
           </div>
         </div>
       </div>
+
       {errors.root && (
         <div className="p-3 bg-red-900/20 text-red-300 rounded text-center border border-red-900/30">
           {errors.root.message}
         </div>
       )}
+
       <div className="flex gap-4 pt-4 border-t border-gray-800">
         <Button type="submit" disabled={isSubmitting} className="flex-1">
           {isSubmitting ? "Сохранение..." : "Сохранить"}

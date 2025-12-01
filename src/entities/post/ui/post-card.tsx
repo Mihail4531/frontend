@@ -21,7 +21,6 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
   const postLink = APP_ROUTE?.blog?.show(post.slug) || `/blog/${post.slug}`;
   const isOwner = post.user && user?.id === post.user.id;
 
-  // 👇 2. Логика: Автор + Пост еще не одобрен
   const canEdit = isOwner && !post.is_approved;
   const editLink = `/blog/edit/${post.id}`;
 

@@ -21,7 +21,7 @@ export const ProfileSchema = z.object({
     .optional(),
 
   skills: z.string().trim()
-    .max(10, "Слишком много текста")
+    .max(80, "Слишком много текста")
     .optional(),
 });
 
