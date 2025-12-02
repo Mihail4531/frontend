@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Post, postApi } from "@/entities/post";
 import Link from "next/link";
 import { APP_ROUTE } from "@/shared/config";
@@ -17,19 +17,19 @@ interface PostCardProps {
 export const PostCard = ({ post, onDelete }: PostCardProps) => {
   const { user } = useAuthStore();
   const [isDeleting, setIsDeleting] = useState(false);
-
+  const [isClient, setIsClient] = useState(false);
   const postLink = APP_ROUTE?.blog?.show(post.slug) || `/blog/${post.slug}`;
-  const isOwner = post.user && user?.id === post.user.id;
-
+  const isOwner = isClient && post.user && user?.id === post.user.id;
   const canEdit = isOwner && !post.is_approved;
   const editLink = `/blog/edit/${post.id}`;
-
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
     if (!confirm("Вы уверены, что хотите удалить этот пост?")) return;
-
     try {
       setIsDeleting(true);
       await postApi.delete(post.id);
@@ -52,14 +52,9 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
     return html.replace(/<[^>]*>?/gm, "");
   };
   const excerpt = stripHtml(post.content).substring(0, 180).trim() + "...";
-
   return (
     <article className="group relative flex flex-col bg-zinc-900/20 border border-white/5 rounded-xl p-6 hover:bg-zinc-900/40 hover:border-white/10 transition-all duration-300">
-      
-      {/* ГЛАВНАЯ ССЫЛКА НА ПОСТ */}
       <Link href={postLink} className="absolute inset-0 z-0" aria-label={post.title} />
-
-      {/* СТАТУС (слева сверху) */}
       {!post.is_approved && (
         <div className="absolute top-4 left-4 z-30 pointer-events-none">
           <span className="flex items-center gap-1.5 px-2.5 py-1 bg-yellow-500/10 text-yellow-500 text-[10px] font-mono font-medium uppercase rounded-md border border-yellow-500/20 backdrop-blur-sm">
@@ -68,40 +63,30 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
           </span>
         </div>
       )}
-
-      {/* 👇 3. БЛОК ДЕЙСТВИЙ (справа сверху) */}
-      <div className="absolute top-4 right-4 z-30 flex items-center gap-2">
-        
-        {/* КНОПКА РЕДАКТИРОВАНИЯ */}
-        {canEdit && (
-          <Link
-            href={editLink}
-            onClick={(e) => e.stopPropagation()} // Чтобы не сработал переход на сам пост
-            className="flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-800/80 backdrop-blur-sm border border-white/10 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all cursor-pointer shadow-lg"
-            title="Редактировать"
-          >
-            <Pencil className="w-4 h-4" />
-          </Link>
-        )}
-
-        {/* КНОПКА УДАЛЕНИЯ */}
-        {isOwner && (
-          <button
-            onClick={handleDelete}
-            disabled={isDeleting}
-            className="flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-800/80 backdrop-blur-sm border border-white/10 text-zinc-400 hover:text-red-500 hover:bg-red-500/10 hover:border-red-500/20 transition-all cursor-pointer shadow-lg"
-            title="Удалить пост"
-          >
-            {isDeleting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Trash2 className="w-4 h-4" />
-            )}
-          </button>
-        )}
-      </div>
-
-      {/* ТЕГИ */}
+      {isClient && (isOwner || canEdit) && (
+        <div className="absolute top-4 right-4 z-30 flex items-center gap-2">
+          {canEdit && (
+            <Link
+              href={`/blog/edit/${post.id}`}
+              onClick={(e) => e.stopPropagation()}
+              className="..."
+              title="Редактировать"
+            >
+              <Pencil className="w-4 h-4" />
+            </Link>
+          )}
+          {isOwner && (
+            <button
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="..."
+              title="Удалить пост"
+            >
+              {isDeleting ? <Loader2 className="..." /> : <Trash2 className="..." />}
+            </button>
+          )}
+        </div>
+      )}
       <div className="flex gap-2 overflow-hidden mb-4 mt-6 relative z-10 pointer-events-none">
         {post.tags?.slice(0, 3).map((tag) => (
           <span
@@ -153,13 +138,17 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
         </div>
 
         <div className="flex items-center gap-4 pointer-events-none">
-          <div className="flex items-center gap-1.5 opacity-70">
-            <Calendar className="w-3 h-3" />
-            <span>
-              {new Date(post.created_at).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}
-            </span>
-          </div>
-        </div>
+            <div className="flex items-center gap-1.5 opacity-70">
+               <Calendar className="w-3 h-3" />
+               <span suppressHydrationWarning> 
+         
+                 {new Date(post.created_at).toLocaleDateString("ru-RU", { 
+                    day: "numeric", 
+                    month: "short" 
+                 })}
+               </span>
+            </div>
+         </div>
       </div>
     </article>
   );

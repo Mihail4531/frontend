@@ -19,7 +19,7 @@ export interface Post {
 }
 export type PostFilters = {
   tag?: string;
-  sort?: "newest" | "oldest";
+  sort?: "newest" | "oldest" | "popular";
 };
 export interface UpdatePostData {
   title: string;

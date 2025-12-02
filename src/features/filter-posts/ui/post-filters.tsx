@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { Clock, ArrowUpDown, X } from "lucide-react";
+import { Clock, ArrowUpDown, X, Flame } from "lucide-react"; // 1. Импорт Flame
 
 export const PostFilters = () => {
   const router = useRouter();
@@ -19,7 +19,6 @@ export const PostFilters = () => {
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/5">
-      {/* ЛЕВАЯ ЧАСТЬ: Показываем выбранный тег */}
       <h2 className="text-xl font-bold text-white flex items-center gap-2">
         {currentTag ? (
           <div className="flex items-center gap-2">
@@ -38,12 +37,10 @@ export const PostFilters = () => {
           "Все публикации"
         )}
       </h2>
-
-      {/* ПРАВАЯ ЧАСТЬ: Кнопки сортировки */}
-      <div className="flex items-center bg-zinc-900 p-1 rounded-lg border border-white/5 w-full sm:w-auto">
+      <div className="flex items-center bg-zinc-900 p-1 rounded-lg border border-white/5 w-full sm:w-auto overflow-x-auto">
         <button
           onClick={() => updateFilter("sort", "newest")}
-          className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all flex items-center justify-center gap-2 ${
+          className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
             currentSort === "newest"
               ? "bg-zinc-800 text-white shadow-sm"
               : "text-zinc-500 hover:text-zinc-300"
@@ -52,10 +49,24 @@ export const PostFilters = () => {
           <Clock className="w-3.5 h-3.5" />
           Новые
         </button>
+
+        <div className="w-px h-4 bg-white/5 mx-1" />
+        <button
+          onClick={() => updateFilter("sort", "popular")}
+          className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
+            currentSort === "popular"
+              ? "bg-red-900/20 text-red-400 border border-red-900/30 shadow-sm" 
+              : "text-zinc-500 hover:text-red-400/70"
+          }`}
+        >
+          <Flame className="w-3.5 h-3.5" />
+          Популярные
+        </button>
+
         <div className="w-px h-4 bg-white/5 mx-1" />
         <button
           onClick={() => updateFilter("sort", "oldest")}
-          className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all flex items-center justify-center gap-2 ${
+          className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
             currentSort === "oldest"
               ? "bg-zinc-800 text-white shadow-sm"
               : "text-zinc-500 hover:text-zinc-300"
