@@ -16,21 +16,15 @@ interface PostCardProps {
 export const PostCard = ({ post, onDelete }: PostCardProps) => {
   const { user } = useAuthStore();
   const [isDeleting, setIsDeleting] = useState(false);
-  
-  // 1. Флаг: компонент смонтирован в браузере?
   const [isMounted, setIsMounted] = useState(false);
-
-  // 2. Включаем флаг только после загрузки на клиенте
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   const postLink = APP_ROUTE?.blog?.show(post.slug) || `/blog/${post.slug}`;
-  
-  // Проверка прав (работает корректно, но отрисовку кнопок задерживаем до isMounted)
   const isOwner = post.user && user?.id === post.user.id;
   const canEdit = isOwner && !post.is_approved;
-  const editLink = `/blog/edit/${post.id}`; // Поправил кавычки, у тебя были слеши регулярки
+  const editLink = `/blog/edit/${post.slug}`; 
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -57,13 +51,17 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
     if (!html) return "";
     return html.replace(/<[^>]*>?/gm, "");
   };
-  
   const excerpt = stripHtml(post.content).substring(0, 180).trim() + "...";
-
+  
   return (
     <article className="group relative flex flex-col bg-zinc-900/20 border border-white/5 rounded-xl p-6 hover:bg-zinc-900/40 hover:border-white/10 transition-all duration-300">
-      <Link href={postLink} className="absolute inset-0 z-0" aria-label={post.title} />
-      
+
+      {post.is_approved ? (
+        <Link href={postLink} className="absolute inset-0 z-0" aria-label={post.title} />
+      ) : (
+        <div className="absolute inset-0 z-0 cursor-default" />
+      )}
+
       {!post.is_approved && (
         <div className="absolute top-4 left-4 z-30 pointer-events-none">
           <span className="flex items-center gap-1.5 px-2.5 py-1 bg-yellow-500/10 text-yellow-500 text-[10px] font-mono font-medium uppercase rounded-md border border-yellow-500/20 backdrop-blur-sm">
@@ -72,8 +70,6 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
           </span>
         </div>
       )}
-
-      {/* 3. Рендерим кнопки ТОЛЬКО если мы на клиенте (isMounted) */}
       {isMounted && (
         <div className="absolute top-4 right-4 z-30 flex items-center gap-2">
           {canEdit && (
@@ -102,7 +98,6 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
           )}
         </div>
       )}
-
       <div className="flex gap-2 overflow-hidden mb-4 mt-6 relative z-10 pointer-events-none">
         {post.tags?.slice(0, 3).map((tag) => (
           <span
@@ -119,11 +114,9 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
           {post.title}
         </h3>
       </div>
-      
       <p className="text-zinc-400 text-sm leading-relaxed line-clamp-3 mb-6 flex-1 relative z-10 pointer-events-none">
         {excerpt}
       </p>
-      
       <div className="pt-4 mt-auto border-t border-white/5 flex items-center justify-between text-xs text-zinc-500 font-mono relative z-10">
         <div className="flex items-center gap-2 relative z-20 pointer-events-auto">
           {post.user ? (
@@ -154,7 +147,6 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
         <div className="flex items-center gap-4 pointer-events-none">
           <div className="flex items-center gap-1.5 opacity-70">
             <Calendar className="w-3 h-3" />
-            {/* 4. Разрешаем разницу во времени между сервером и клиентом */}
             <span suppressHydrationWarning>
               {new Date(post.created_at).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}
             </span>

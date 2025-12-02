@@ -29,13 +29,10 @@ export const postApi = {
 
   getBySlug: async (slug: string): Promise<Post> => {
     const response = await $axios.get<{ data: Post }>(`/posts/${slug}`);
+    
     return response.data.data;
   },
-
-  // 👇 ДОБАВЛЯЕМ ВОТ ЭТОТ МЕТОД
   getById: async (id: number): Promise<Post> => {
-    // Laravel контроллер (метод show) у тебя настроен на поиск "slug OR id",
-    // так что этот запрос сработает корректно
     const response = await $axios.get<{ data: Post }>(`/posts/${id}`);
     return response.data.data;
   },

@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { cookies } from "next/headers";
+
 import { ArrowLeft, Calendar, Eye, User, Hash } from "lucide-react";
 import { postApi } from "@/entities/post"; 
 import { MarkdownViewer } from "@/shared/ui/markdown-viewer";
