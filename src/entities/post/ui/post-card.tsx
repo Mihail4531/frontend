@@ -24,7 +24,7 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
   const postLink = APP_ROUTE?.blog?.show(post.slug) || `/blog/${post.id}`;
   const isOwner = post.user && user?.id === post.user.id;
   const canEdit = isOwner && !post.is_approved;
-  const editLink = `/blog/edit/${post.slug}`; 
+  const editLink = `/blog/edit/${post.id}`; 
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
