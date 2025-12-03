@@ -21,7 +21,7 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
     setIsMounted(true);
   }, []);
 
-  const postLink = APP_ROUTE?.blog?.show(post.slug) || `/blog/${post.id}`;
+  const postLink = APP_ROUTE?.blog?.show(post.slug) || `/blog/${post.slug}`;
   const isOwner = post.user && user?.id === post.user.id;
   const canEdit = isOwner && !post.is_approved;
   const editLink = `/blog/edit/${post.id}`; 
