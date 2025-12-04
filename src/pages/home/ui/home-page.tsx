@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { ArrowRight, Terminal } from "lucide-react";
 import { Post, postApi, Tag } from "@/entities/post";
-import { PostCard } from "@/entities/post"; 
+ 
 import { PostFilters } from "@/features/filter-posts"; 
 import { PopularTags } from "@/widgets/sidebar-tags"; 
+import { PostCard } from "@/widgets/ui/post-card";
 interface HomePageProps {
   searchParams: { [key: string]: string | undefined };
 }
