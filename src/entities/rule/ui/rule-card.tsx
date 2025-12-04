@@ -4,9 +4,10 @@ import { CircleHelp } from "lucide-react";
 
 interface RuleCardProps {
   rule: Rule;
+  index: number;
 }
 
-export const RuleCard = ({ rule }: RuleCardProps) => {
+export const RuleCard = ({ rule, index }: RuleCardProps) => {
   const IconComponent = ICON_MAP[rule.icon] || CircleHelp;
   const colorClasses = getColorClasses(rule.color);
   return (
@@ -22,7 +23,7 @@ export const RuleCard = ({ rule }: RuleCardProps) => {
         </div>
         
         <h3 className={`text-xl font-bold text-zinc-100 mb-3 transition-colors group-hover:text-zinc-50`}>
-          {rule.id}. {rule.title}
+           {index}. {rule.title}
         </h3>
         
         <p className="text-zinc-400 leading-relaxed text-sm">

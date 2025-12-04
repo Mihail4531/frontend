@@ -37,11 +37,16 @@ export const RulesPage = async () => {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {rules.length > 0 ? (
-            rules.map((rule) => (
-              <RuleCard key={rule.id} rule={rule} />
-            ))
-          ) : (
+      {rules.length > 0 ? (
+    // 👇 ДОБАВЛЯЕМ index в аргументы map
+    rules.map((rule, index) => (
+      <RuleCard 
+        key={rule.id} 
+        rule={rule} 
+        index={index + 1} 
+      />
+    ))
+  ) : (
             <div className="col-span-2 py-20 text-center border border-dashed border-zinc-800 rounded-2xl bg-zinc-900/20">
               <p className="text-zinc-500">Список правил временно недоступен или пуст.</p>
             </div>
