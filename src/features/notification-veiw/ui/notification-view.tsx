@@ -71,15 +71,14 @@ export const NotificationBell = () => {
     }
   };
 
-  return (
+ return (
     <div className="relative" ref={dropdownRef}>
-      {/* Кнопка с иконкой Lucide */}
+      {/* Кнопка */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 text-current hover:bg-zinc-800 rounded-full transition outline-none"
+        className="relative p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-full transition outline-none"
       >
-        <Bell className="w-6 h-6" /> {/* Иконка Lucide */}
-        
+        <Bell className="w-6 h-6" />
         {unreadCount > 0 && (
           <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full transform translate-x-1/4 -translate-y-1/4">
             {unreadCount}
@@ -89,7 +88,7 @@ export const NotificationBell = () => {
 
       {/* Выпадающий список */}
       {isOpen && (
-        <div className="absolute right-0 mb-2 bottom-full w-80 sm:w-96 bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-hidden">
+        <div className="absolute left-0 mb-2 bottom-full w-80 sm:w-96 bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-hidden origin-bottom-left">
           <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 font-semibold text-gray-700 flex justify-between items-center">
             <span>Уведомления</span>
             {unreadCount > 0 && (
