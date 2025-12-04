@@ -1,5 +1,8 @@
+"use client";
+
 import { useState, useEffect, useRef } from "react";
-import { Bell } from "lucide-react"; // 1. Берем иконку из lucide-react
+import { createPortal } from "react-dom"; // 1. Импортируем портал
+import { Bell } from "lucide-react";
 import { notificationApi } from "@/entities/notification/api/notification.api";
 import { Notification } from "@/entities/notification/model/types";
 import { NotificationItem } from "@/entities/notification/ui/notification";
@@ -7,86 +10,140 @@ import { NotificationItem } from "@/entities/notification/ui/notification";
 export const NotificationBell = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  
+  // 2. Стейт для координат. Нам нужно знать, где рисовать окно, так как оно оторвано от кнопки
+  const [coords, setCoords] = useState({ left: 0, bottom: 0 });
+  
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
- const handleDelete = async (id: string) => {
-    try {
-        // Оптимистичное удаление: сразу убираем из списка на экране
-        setNotifications((prev) => prev.filter((n) => n.id !== id));
-        
-        // Отправляем запрос на сервер
-        await notificationApi.delete(id);
-    } catch (error) {
-        console.error("Failed to delete notification", error);
-        // В идеале тут можно вернуть уведомление обратно в список, если ошибка
-    }
-  };
   const unreadCount = notifications.filter((n) => n.read_at === null).length;
 
-  // 2. Исправляем useEffect, чтобы избежать ошибки "Cascading renders"
+  // Логика загрузки уведомлений (без изменений)
   useEffect(() => {
-    let isMounted = true; // Флаг для предотвращения обновления стейта на размонтированном компоненте
-
+    let isMounted = true;
     const fetchNotifications = async () => {
       try {
         const data = await notificationApi.getAll();
-        // Проверяем, смонтирован ли компонент перед обновлением стейта
-        if (isMounted) {
-          setNotifications(data);
-        }
+        if (isMounted) setNotifications(data);
       } catch (error) {
         console.error("Failed to load notifications", error);
       }
     };
-
     fetchNotifications();
-
-    // Поллинг раз в 60 сек
     const interval = setInterval(fetchNotifications, 60000);
-
-    // Функция очистки
     return () => {
       isMounted = false;
       clearInterval(interval);
     };
-  }, []); // <--- ВАЖНО: Пустой массив зависимостей. Если его убрать, будет бесконечный ререндер и ошибка.
+  }, []);
 
-  // Закрытие при клике снаружи
+  // 3. Логика открытия и расчета позиции
+  const toggleOpen = () => {
+    if (!isOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setCoords({
+        left: rect.left, // Выравниваем по левому краю кнопки
+        // Считаем отступ снизу: Высота экрана - Верх кнопки + Отступ
+        bottom: window.innerHeight - rect.top + 12 
+      });
+    }
+    setIsOpen(!isOpen);
+  };
+
+  // Закрытие при клике снаружи (адаптировано под портал)
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        dropdownRef.current && !dropdownRef.current.contains(e.target as Node) &&
+        buttonRef.current && !buttonRef.current.contains(e.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []); // Тоже пустой массив
+    
+    // Закрываем при скролле, чтобы окно не уезжало от кнопки
+    const handleScroll = () => setIsOpen(false);
 
-  // Логика "Прочитать"
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      window.addEventListener("scroll", handleScroll, true);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  }, [isOpen]);
+
+  const handleDelete = async (id: string) => {
+    try {
+        setNotifications((prev) => prev.filter((n) => n.id !== id));
+        await notificationApi.delete(id);
+    } catch (error) {
+        console.error("Failed to delete notification", error);
+    }
+  };
+
   const handleRead = async (notification: Notification) => {
     if (notification.read_at) return;
-
     try {
-      // Оптимистичное обновление UI
       setNotifications((prev) =>
-        prev.map((n) =>
-          n.id === notification.id
-            ? { ...n, read_at: new Date().toISOString() }
-            : n
-        )
+        prev.map((n) => n.id === notification.id ? { ...n, read_at: new Date().toISOString() } : n)
       );
-      // Запрос на сервер
       await notificationApi.markAsRead(notification.id);
     } catch (error) {
       console.error("Error marking as read", error);
     }
   };
 
- return (
-    <div className="relative" ref={dropdownRef}>
-      {/* Кнопка */}
+  // 4. Содержимое выпадающего списка (теперь в переменной)
+  const dropdownContent = (
+    <div
+      ref={dropdownRef}
+      style={{ 
+        position: "fixed", 
+        left: coords.left, 
+        bottom: coords.bottom, 
+        zIndex: 9999 
+      }}
+      className="w-80 sm:w-96 bg-zinc-950 border border-zinc-800 rounded-xl shadow-2xl shadow-black overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-bottom-left"
+    >
+      {/* Заголовок */}
+      <div className="px-4 py-3 bg-zinc-900 border-b border-zinc-800 font-semibold text-white flex justify-between items-center">
+        <span>Уведомления</span>
+        {unreadCount > 0 && (
+            <span className="text-xs font-medium text-white bg-indigo-600 px-2 py-0.5 rounded-md shadow-sm">
+                {unreadCount} новых
+            </span>
+        )}
+      </div>
+
+      {/* Список */}
+      <div className="max-h-[400px] overflow-y-auto custom-scrollbar bg-zinc-950">
+        {notifications.length === 0 ? (
+          <div className="p-8 text-center text-zinc-500 text-sm">
+            Нет новых уведомлений
+          </div>
+        ) : (
+          notifications.map((item) => (
+            <NotificationItem
+              key={item.id}
+              notification={item}
+              onClick={() => handleRead(item)}
+              onDelete={() => handleDelete(item.id)}
+            />
+          ))
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Кнопка остается на своем месте в Sidebar */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        ref={buttonRef}
+        onClick={toggleOpen}
         className={`relative p-2 rounded-full transition outline-none ${
            isOpen ? 'text-white bg-zinc-800' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
         }`}
@@ -99,47 +156,8 @@ export const NotificationBell = () => {
         )}
       </button>
 
-      {/* Выпадающий список */}
-      {isOpen && (
-        <div className="absolute left-0 mb-4 bottom-full 
-            w-80 sm:w-96 
-            bg-[#09090b]                 
-            border border-zinc-800 
-            rounded-xl 
-            shadow-2xl shadow-black 
-            z-[9999]                     
-            overflow-hidden 
-            origin-bottom-left">
-          
-          {/* Заголовок */}
-          <div className="px-4 py-3 bg-zinc-900 border-b border-zinc-700/50 font-semibold text-white flex justify-between items-center">
-            <span>Уведомления</span>
-            {unreadCount > 0 && (
-                <span className="text-xs font-medium text-white bg-red-900 px-2 py-0.5 rounded-md shadow-sm">
-                    {unreadCount} новых
-                </span>
-            )}
-          </div>
-
-          {/* Список */}
-          <div className="max-h-[400px] overflow-y-auto custom-scrollbar bg-[#09090b]">
-            {notifications.length === 0 ? (
-              <div className="p-8 text-center text-zinc-500 text-sm">
-                Нет новых уведомлений
-              </div>
-            ) : (
-              notifications.map((item) => (
-                <NotificationItem
-                  key={item.id}
-                  notification={item}
-                  onClick={() => handleRead(item)}
-                  onDelete={() => handleDelete(item.id)}
-                />
-              ))
-            )}
-          </div>
-        </div>
-      )}
-    </div>
+      {/* Меню рендерится в body через портал */}
+      {isOpen && typeof document !== "undefined" && createPortal(dropdownContent, document.body)}
+    </>
   );
 };
