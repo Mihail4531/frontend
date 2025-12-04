@@ -2,7 +2,10 @@ export interface NotificationData {
   title: string;
   message: string;
   report_id?: number | null;
-  status?: 'resolved' | 'rejected' | string | null; 
+  status?: 'resolved' | 'rejected' | string | null;
+  post_title?: string;
+  // --- ДОБАВЛЯЕМ SLUG ---
+  post_slug?: string;
 }
 
 export interface Notification {
