@@ -101,13 +101,21 @@ export const NotificationBell = () => {
 
       {/* Выпадающий список */}
       {isOpen && (
-        <div className="absolute left-0 mb-4 bottom-full w-80 sm:w-96 bg-zinc-950 border border-zinc-800 rounded-xl shadow-2xl shadow-black z-9999     overflow-hidden origin-bottom-left">
+        <div className="absolute left-0 mb-4 bottom-full 
+            w-80 sm:w-96 
+            bg-[#09090b]                 
+            border border-zinc-800 
+            rounded-xl 
+            shadow-2xl shadow-black 
+            z-[9999]                     
+            overflow-hidden 
+            origin-bottom-left">
           
           {/* Заголовок */}
           <div className="px-4 py-3 bg-zinc-900 border-b border-zinc-700/50 font-semibold text-white flex justify-between items-center">
             <span>Уведомления</span>
             {unreadCount > 0 && (
-                <span className="text-xs font-medium text-white bg-indigo-600 px-2 py-0.5 rounded-md shadow-sm">
+                <span className="text-xs font-medium text-white bg-red-900 px-2 py-0.5 rounded-md shadow-sm">
                     {unreadCount} новых
                 </span>
             )}
