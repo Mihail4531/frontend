@@ -83,11 +83,13 @@ export const NotificationBell = () => {
   };
 
  return (
-  <div className="relative" ref={dropdownRef}>
+    <div className="relative" ref={dropdownRef}>
       {/* Кнопка */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-full transition outline-none"
+        className={`relative p-2 rounded-full transition outline-none ${
+           isOpen ? 'text-white bg-zinc-800' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+        }`}
       >
         <Bell className="w-6 h-6" />
         {unreadCount > 0 && (
@@ -97,22 +99,22 @@ export const NotificationBell = () => {
         )}
       </button>
 
-      {/* Выпадающий список (Темная тема) */}
+      {/* Выпадающий список */}
       {isOpen && (
-        <div className="absolute left-0 mb-2 bottom-full w-80 sm:w-96 bg-black border border-zinc-800 rounded-xl shadow-2xl shadow-black/50 z-50 overflow-hidden origin-bottom-left">
+        <div className="absolute left-0 mb-4 bottom-full w-80 sm:w-96 bg-[#09090b] border border-zinc-700/60 rounded-xl shadow-2xl shadow-black/80 z-999999 overflow-hidden origin-bottom-left ring-1 ring-white/5">
           
-          {/* Заголовок списка */}
-          <div className="px-4 py-3 bg-zinc-900/50 border-b border-zinc-800 font-semibold text-white flex justify-between items-center backdrop-blur-sm">
+          {/* Заголовок */}
+          <div className="px-4 py-3 bg-zinc-900 border-b border-zinc-700/50 font-semibold text-white flex justify-between items-center">
             <span>Уведомления</span>
             {unreadCount > 0 && (
-                <span className="text-xs font-medium text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded-full">
+                <span className="text-xs font-medium text-white bg-indigo-600 px-2 py-0.5 rounded-md shadow-sm">
                     {unreadCount} новых
                 </span>
             )}
           </div>
 
-          {/* Сам список */}
-          <div className="max-h-[400px] overflow-y-auto">
+          {/* Список */}
+          <div className="max-h-[400px] overflow-y-auto custom-scrollbar bg-[#09090b]">
             {notifications.length === 0 ? (
               <div className="p-8 text-center text-zinc-500 text-sm">
                 Нет новых уведомлений
@@ -123,7 +125,7 @@ export const NotificationBell = () => {
                   key={item.id}
                   notification={item}
                   onClick={() => handleRead(item)}
-                   onDelete={() => handleDelete(item.id)}
+                  onDelete={() => handleDelete(item.id)}
                 />
               ))
             )}
