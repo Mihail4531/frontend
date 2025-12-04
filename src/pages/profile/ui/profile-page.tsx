@@ -6,10 +6,11 @@ import { PlusCircle } from "lucide-react";
 import { Button } from "@/shared/ui";
 import { APP_ROUTE } from "@/shared/config"
 import { useAuthStore } from "@/entities/session";
-import { Post, PostCard, postApi } from "@/entities/post";
+import { Post, postApi } from "@/entities/post";
 import { UserProfileCard } from "@/entities/user";
 import { EditProfileForm } from "@/features/edit-profile";
 import { LogoutButton } from "@/features/auth/logout";
+import { PostCard } from "@/widgets/ui/post-card";
   export const ProfilePage = () => {
   const { user, loading } = useAuthStore();
   const router = useRouter();

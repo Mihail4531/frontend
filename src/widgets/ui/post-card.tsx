@@ -4,9 +4,12 @@ import { useState, useEffect } from "react";
 import { Post, postApi } from "@/entities/post";
 import Link from "next/link";
 import { APP_ROUTE } from "@/shared/config";
-import { Calendar, User, Trash2, Loader2, Clock, Pencil } from "lucide-react";
+// 👇 1. Добавили иконку Flag
+import { Calendar, User, Trash2, Loader2, Clock, Pencil, Flag } from "lucide-react";
 import { UserPopover } from "@/entities/user/ui/user-popup";
 import { useAuthStore } from "@/entities/session";
+// 👇 2. Импортируем фичу (Виджет имеет право знать о фичах)
+import { ReportModal } from "@/features/report-post/ui/report-modal";
 
 interface PostCardProps {
   post: Post;
@@ -17,6 +20,10 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
   const { user } = useAuthStore();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  
+  // 👇 3. Состояние для открытия модалки
+  const [isReportOpen, setIsReportOpen] = useState(false);
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -70,8 +77,26 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
           </span>
         </div>
       )}
+
       {isMounted && (
         <div className="absolute top-4 right-4 z-30 flex items-center gap-2">
+          
+          {/* 👇 4. КНОПКА ПОЖАЛОВАТЬСЯ */}
+          {/* Показываем, если юзер авторизован И это не его собственный пост */}
+          {user && !isOwner && (
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsReportOpen(true);
+              }}
+              className="flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-800/80 backdrop-blur-sm border border-white/10 text-zinc-500 hover:text-red-400 hover:bg-zinc-700 transition-all cursor-pointer shadow-lg"
+              title="Пожаловаться"
+            >
+              <Flag className="w-4 h-4" />
+            </button>
+          )}
+
           {canEdit && (
             <Link
               href={editLink}
@@ -98,6 +123,7 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
           )}
         </div>
       )}
+
       <div className="flex gap-2 overflow-hidden mb-4 mt-6 relative z-10 pointer-events-none">
         {post.tags?.slice(0, 3).map((tag) => (
           <span
@@ -153,6 +179,14 @@ export const PostCard = ({ post, onDelete }: PostCardProps) => {
           </div>
         </div>
       </div>
+
+      {/* 👇 5. Вставляем модалку в конец компонента */}
+      <ReportModal 
+        isOpen={isReportOpen}
+        onClose={() => setIsReportOpen(false)}
+        postId={post.id}
+      />
+      
     </article>
   );
 };
