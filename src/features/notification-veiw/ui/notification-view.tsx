@@ -96,7 +96,6 @@ export const NotificationBell = () => {
     }
   };
 
-  // 4. Содержимое выпадающего списка (теперь в переменной)
   const dropdownContent = (
     <div
       ref={dropdownRef}
@@ -108,7 +107,6 @@ export const NotificationBell = () => {
       }}
       className="w-80 sm:w-96 bg-zinc-950 border border-zinc-800 rounded-xl shadow-2xl shadow-black overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-bottom-left"
     >
-      {/* Заголовок */}
       <div className="px-4 py-3 bg-zinc-900 border-b border-zinc-800 font-semibold text-white flex justify-between items-center">
         <span>Уведомления</span>
         {unreadCount > 0 && (
@@ -118,7 +116,6 @@ export const NotificationBell = () => {
         )}
       </div>
 
-      {/* Список */}
       <div className="max-h-[400px] overflow-y-auto custom-scrollbar bg-zinc-950">
         {notifications.length === 0 ? (
           <div className="p-8 text-center text-zinc-500 text-sm">
@@ -156,7 +153,7 @@ export const NotificationBell = () => {
         )}
       </button>
 
-      {/* Меню рендерится в body через портал */}
+ 
       {isOpen && typeof document !== "undefined" && createPortal(dropdownContent, document.body)}
     </>
   );

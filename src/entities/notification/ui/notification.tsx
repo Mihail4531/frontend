@@ -55,7 +55,7 @@ export const NotificationItem = ({ notification, onClick, onDelete }: Notificati
         <div className="pl-2 mb-2 mt-1">
           {data.post_slug ? (
             <Link 
-                href={`/posts/${data.post_slug}`} 
+                href={`/blog/${data.post_slug}`} 
                 onClick={(e) => e.stopPropagation()} 
                 className="flex items-center gap-1.5 text-xs text-zinc-400 bg-zinc-800/50 px-2 py-1 rounded border border-zinc-800/50 w-fit hover:bg-zinc-800 hover:text-white transition-colors"
             >
