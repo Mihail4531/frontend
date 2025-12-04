@@ -9,7 +9,18 @@ export const NotificationBell = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Считаем количество непрочитанных (где read_at === null)
+ const handleDelete = async (id: string) => {
+    try {
+        // Оптимистичное удаление: сразу убираем из списка на экране
+        setNotifications((prev) => prev.filter((n) => n.id !== id));
+        
+        // Отправляем запрос на сервер
+        await notificationApi.delete(id);
+    } catch (error) {
+        console.error("Failed to delete notification", error);
+        // В идеале тут можно вернуть уведомление обратно в список, если ошибка
+    }
+  };
   const unreadCount = notifications.filter((n) => n.read_at === null).length;
 
   // 2. Исправляем useEffect, чтобы избежать ошибки "Cascading renders"
@@ -112,6 +123,7 @@ export const NotificationBell = () => {
                   key={item.id}
                   notification={item}
                   onClick={() => handleRead(item)}
+                   onDelete={() => handleDelete(item.id)}
                 />
               ))
             )}
