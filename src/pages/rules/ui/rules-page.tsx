@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { ArrowLeft, Scale } from "lucide-react";
 import { Rule, ruleApi, RuleCard } from "@/entities/rule"; 
-
+export const revalidate = 0; 
 export const RulesPage = async () => {
+  
    let rules: Rule[] = [];
   try {
     rules = await ruleApi.getAll();
