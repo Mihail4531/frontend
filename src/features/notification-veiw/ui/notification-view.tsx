@@ -72,7 +72,7 @@ export const NotificationBell = () => {
   };
 
  return (
-    <div className="relative" ref={dropdownRef}>
+  <div className="relative" ref={dropdownRef}>
       {/* Кнопка */}
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -86,21 +86,24 @@ export const NotificationBell = () => {
         )}
       </button>
 
-      {/* Выпадающий список */}
+      {/* Выпадающий список (Темная тема) */}
       {isOpen && (
-        <div className="absolute left-0 mb-2 bottom-full w-80 sm:w-96 bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-hidden origin-bottom-left">
-          <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 font-semibold text-gray-700 flex justify-between items-center">
+        <div className="absolute left-0 mb-2 bottom-full w-80 sm:w-96 bg-black border border-zinc-800 rounded-xl shadow-2xl shadow-black/50 z-50 overflow-hidden origin-bottom-left">
+          
+          {/* Заголовок списка */}
+          <div className="px-4 py-3 bg-zinc-900/50 border-b border-zinc-800 font-semibold text-white flex justify-between items-center backdrop-blur-sm">
             <span>Уведомления</span>
             {unreadCount > 0 && (
-                <span className="text-xs font-normal text-gray-500">
+                <span className="text-xs font-medium text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded-full">
                     {unreadCount} новых
                 </span>
             )}
           </div>
 
+          {/* Сам список */}
           <div className="max-h-[400px] overflow-y-auto">
             {notifications.length === 0 ? (
-              <div className="p-6 text-center text-gray-500 text-sm">
+              <div className="p-8 text-center text-zinc-500 text-sm">
                 Нет новых уведомлений
               </div>
             ) : (

@@ -3,7 +3,7 @@ import { Notification } from "../model/types";
 
 interface NotificationItemProps {
   notification: Notification;
-  onClick: () => void; 
+  onClick: () => void;
 }
 
 export const NotificationItem = ({ notification, onClick }: NotificationItemProps) => {
@@ -13,41 +13,40 @@ export const NotificationItem = ({ notification, onClick }: NotificationItemProp
   return (
     <div
       onClick={onClick}
-      className={`p-4 border-b border-gray-100 cursor-pointer transition hover:bg-gray-50 ${
-        isUnread ? "bg-blue-50" : "bg-white"
-      }`}
+      // Общие стили контейнера
+      className={`p-4 border-b border-zinc-800 cursor-pointer transition duration-200 
+        ${isUnread 
+          ? "bg-zinc-900" // Непрочитанное: чуть светлее фона
+          : "bg-black hover:bg-zinc-900/50" // Прочитанное: черный фон, при наведении подсветка
+        }`}
     >
-      <div className="flex justify-between items-start mb-1">
-        <h4 className={`text-sm ${isUnread ? "font-bold text-gray-900" : "font-medium text-gray-700"}`}>
+      {/* Шапка: Заголовок и Дата */}
+      <div className="flex justify-between items-start mb-1 gap-2">
+        <h4 className={`text-sm ${isUnread ? "font-bold text-white" : "font-medium text-zinc-300"}`}>
           {data.title}
         </h4>
-        <span className="text-xs text-gray-400 whitespace-nowrap ml-2">
+        <span className="text-xs text-zinc-500 whitespace-nowrap">
           {new Date(created_at).toLocaleDateString()}
         </span>
       </div>
 
-      {/* Сообщение */}
-      <p className="text-sm text-gray-600 mb-2">{data.message}</p>
+      {/* Текст сообщения */}
+      <p className="text-sm text-zinc-400 mb-3 leading-relaxed">
+        {data.message}
+      </p>
 
-      {/* Ответ администратора (если есть) */}
+      {/* Ответ администратора */}
       {data.reply && (
-        <div className="bg-white p-2 rounded border border-gray-200 text-xs text-gray-500 italic mb-2">
-          {'Админ: "'}{data.reply}{'"'}
+        <div className="bg-zinc-900/50 p-3 rounded-lg border border-zinc-800 text-xs text-zinc-300 italic mb-2">
+          <span className="text-indigo-400 font-semibold not-italic">Админ: </span> 
+         {data.reply}{'"'}
         </div>
       )}
 
-      {/* Ссылка на жалобу (если есть) */}
-      {data.report_id && (
-        <div className="mt-1">
-          <Link
-            href={`/profile/reports/${data.report_id}`}
-            className="text-xs text-blue-600 hover:underline font-medium"
-            onClick={(e) => e.stopPropagation()} // Чтобы клик по ссылке не вызывал onClick карточки дважды
-          >
-            Посмотреть детали →
-          </Link>
-        </div>
-      )}
+   
+      
     </div>
   );
 };
+
+
