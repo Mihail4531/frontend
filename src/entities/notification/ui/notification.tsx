@@ -46,7 +46,7 @@ export const NotificationItem = ({ notification, onClick }: NotificationItemProp
           {data.post_slug ? (
             // Если есть SLUG - делаем ссылку
             <Link 
-                href={`/posts/${data.post_slug}`} 
+                href={`/blog/${data.post_slug}`} 
                 onClick={(e) => e.stopPropagation()} // Чтобы клик не открывал жалобу, а открывал пост
                 className="flex items-center gap-1.5 text-xs text-zinc-400 bg-zinc-800/50 px-2 py-1 rounded border border-zinc-800/50 w-fit hover:bg-zinc-800 hover:text-white transition-colors"
             >
