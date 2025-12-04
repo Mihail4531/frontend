@@ -2,19 +2,23 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Menu } from "lucide-react";
 import { useAuthStore } from "@/entities/session";
 import { UserPreview } from "@/entities/user";
 import { LogoutButton } from "@/features/auth/logout/ui/logout-button";
+// 1. Импортируем компонент уведомлений
+import { NotificationBell } from "@/features/notification-veiw/ui/notification-view";
+
 import { Logo } from "./logo";
 import { Navigation } from "./navigation";
 import { AuthButton } from "./auth-button";
 import { SIDEBAR_NAVIGATION } from "../config/navigation";
-import { Menu } from "lucide-react";
 
 export const Sidebar = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { user } = useAuthStore();
+
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
@@ -27,12 +31,15 @@ export const Sidebar = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   const handleNavigate = () => {
     if (isMobile) {
       setIsCollapsed(true);
     }
   };
-  const logoutStyles ="w-full flex items-center justify-start gap-3 px-3 py-3 rounded-lg transition-all bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 font-medium";
+
+  const logoutStyles = "w-full flex items-center justify-start gap-3 px-3 py-3 rounded-lg transition-all bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 font-medium";
+
   return (
     <>
       {isMobile && isCollapsed && (
@@ -49,6 +56,7 @@ export const Sidebar = () => {
           onClick={() => setIsCollapsed(true)}
         />
       )}
+      
       <aside
         className={`bg-black border-r border-zinc-900 flex flex-col transition-all duration-300 ease-out ${
           isMobile
@@ -62,19 +70,33 @@ export const Sidebar = () => {
           isCollapsed={isCollapsed}
           onToggle={() => setIsCollapsed(!isCollapsed)}
         />
+        
         <Navigation
           items={SIDEBAR_NAVIGATION}
           isCollapsed={isCollapsed}
           onNavigate={handleNavigate}
         />
+
         <div className="mt-auto p-4 border-t border-zinc-900 space-y-2">
+          {/* 2. Добавляем уведомления ТОЛЬКО если пользователь авторизован */}
+          {user && (
+            <div className={`flex ${isCollapsed ? "justify-center" : "justify-end px-2"} mb-2`}>
+               {/* Оборачиваем колокольчик, чтобы задать стили для темной темы */}
+               <div className="text-zinc-400 hover:text-white transition-colors">
+                  <NotificationBell />
+               </div>
+            </div>
+          )}
+
           <AuthButton isCollapsed={isCollapsed} onNavigate={handleNavigate} />
+          
           {user && (
             <LogoutButton
               isCollapsed={isCollapsed}
               className={logoutStyles}
             />
           )}
+          
           {user && (
             <Link
               href="/profile"
