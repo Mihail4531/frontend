@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { createPortal } from "react-dom"; // 1. Импортируем портал
+import { createPortal } from "react-dom";
 import { Bell } from "lucide-react";
 import { notificationApi } from "@/entities/notification/api/notification.api";
 import { Notification } from "@/entities/notification/model/types";
@@ -10,16 +10,10 @@ import { NotificationItem } from "@/entities/notification/ui/notification";
 export const NotificationBell = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  
-  // 2. Стейт для координат. Нам нужно знать, где рисовать окно, так как оно оторвано от кнопки
   const [coords, setCoords] = useState({ left: 0, bottom: 0 });
-  
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
   const unreadCount = notifications.filter((n) => n.read_at === null).length;
-
-  // Логика загрузки уведомлений (без изменений)
   useEffect(() => {
     let isMounted = true;
     const fetchNotifications = async () => {
@@ -37,21 +31,16 @@ export const NotificationBell = () => {
       clearInterval(interval);
     };
   }, []);
-
-  // 3. Логика открытия и расчета позиции
   const toggleOpen = () => {
     if (!isOpen && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
       setCoords({
-        left: rect.left, // Выравниваем по левому краю кнопки
-        // Считаем отступ снизу: Высота экрана - Верх кнопки + Отступ
+        left: rect.left,
         bottom: window.innerHeight - rect.top + 12 
       });
     }
     setIsOpen(!isOpen);
   };
-
-  // Закрытие при клике снаружи (адаптировано под портал)
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -63,17 +52,7 @@ export const NotificationBell = () => {
     };
     
     // Закрываем при скролле, чтобы окно не уезжало от кнопки
-    const handleScroll = () => setIsOpen(false);
 
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-      window.addEventListener("scroll", handleScroll, true);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      window.removeEventListener("scroll", handleScroll, true);
-    };
-  }, [isOpen]);
 
   const handleDelete = async (id: string) => {
     try {
@@ -134,7 +113,7 @@ export const NotificationBell = () => {
       </div>
     </div>
   );
-
+  }
   return (
     <>
       {/* Кнопка остается на своем месте в Sidebar */}
