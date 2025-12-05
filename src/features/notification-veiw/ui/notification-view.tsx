@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
+import { createPortal } from "react-dom"; // 1. Импортируем портал
 import { Bell } from "lucide-react";
 import { notificationApi } from "@/entities/notification/api/notification.api";
 import { Notification } from "@/entities/notification/model/types";
@@ -14,6 +14,7 @@ export const NotificationBell = () => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const unreadCount = notifications.filter((n) => n.read_at === null).length;
+
   useEffect(() => {
     let isMounted = true;
     const fetchNotifications = async () => {
@@ -31,11 +32,12 @@ export const NotificationBell = () => {
       clearInterval(interval);
     };
   }, []);
+
   const toggleOpen = () => {
     if (!isOpen && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
       setCoords({
-        left: rect.left,
+        left: rect.left, 
         bottom: window.innerHeight - rect.top + 12 
       });
     }
@@ -50,9 +52,13 @@ export const NotificationBell = () => {
         setIsOpen(false);
       }
     };
-    
-    // Закрываем при скролле, чтобы окно не уезжало от кнопки
-
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   const handleDelete = async (id: string) => {
     try {
@@ -113,7 +119,7 @@ export const NotificationBell = () => {
       </div>
     </div>
   );
-  }
+
   return (
     <>
       {/* Кнопка остается на своем месте в Sidebar */}
