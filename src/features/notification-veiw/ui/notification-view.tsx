@@ -95,7 +95,7 @@ export const NotificationBell = () => {
       <div className="px-4 py-3 bg-zinc-900 border-b border-zinc-800 font-semibold text-white flex justify-between items-center">
         <span>Уведомления</span>
         {unreadCount > 0 && (
-            <span className="text-xs font-medium text-white bg-indigo-600 px-2 py-0.5 rounded-md shadow-sm">
+            <span className="text-xs font-medium text-white bg-red-900 px-2 py-0.5 rounded-md shadow-sm">
                 {unreadCount} новых
             </span>
         )}
